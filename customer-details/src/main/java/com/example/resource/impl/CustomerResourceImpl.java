@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class CustomerResourceImpl implements ICustomerResource {
     @Autowired
@@ -51,4 +53,24 @@ public class CustomerResourceImpl implements ICustomerResource {
 
         return resourceResponse;
     }
+
+    @Override
+    @RequestMapping(path = "/customers",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<CustomerResourceResponse> savesCustomers(@RequestBody List<CustomerResourceRequest> resourceRequestList) throws CustomerException{
+        System.out.println("CustomerResourceImpl.savesCustomers@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@>"+resourceRequestList);
+
+        validator.validCustomers(resourceRequestList);
+
+        List<CustomerServiceRequest > serviceRequestList = requestBuilder.buildServiceRequest2(resourceRequestList );
+
+        List<CustomerServiceResponse> serviceResponseList = service.savesCustomers(serviceRequestList );
+
+        List<CustomerResourceResponse> resourceResponseList = responseBuilder.buildResourceResponse2(serviceResponseList);
+
+        System.out.println("CustomerResourceImpl.savesCustomers@@@@@@@@@@@@@@@@@@@@@@@@@@@>"+resourceResponseList);
+
+        return resourceResponseList;
+    }
+
+
 }

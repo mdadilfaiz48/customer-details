@@ -13,6 +13,8 @@ import com.example.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements ICustomerService {
     @Autowired
@@ -36,5 +38,20 @@ public class CustomerServiceImpl implements ICustomerService {
 
         System.out.println("CustomerServiceImpl.saveCustomer###############################>"+serviceResponse);
         return serviceResponse;
+    }
+
+    @Override
+    public List<CustomerServiceResponse> savesCustomers(List<CustomerServiceRequest> serviceRequestList) throws CustomerException {
+        System.out.println("CustomerServiceImpl.savesCustomers#############################>"+serviceRequestList);
+
+        List<CustomerDAORequest > daoRequestList = requestBuilder.buildDAORequest(serviceRequestList);
+
+        List<CustomerDAOResponse > daoResponseList = dao.savesCustomers(daoRequestList);
+
+        List<CustomerServiceResponse> serviceResponseList = responseBuilder.buildServiceResponse2(daoResponseList);
+
+        System.out.println("CustomerServiceImpl.savesCustomers###########################>"+serviceResponseList);
+
+        return serviceResponseList;
     }
 }
